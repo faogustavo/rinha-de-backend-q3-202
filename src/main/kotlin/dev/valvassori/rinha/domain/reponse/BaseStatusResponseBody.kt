@@ -1,4 +1,4 @@
-package dev.valvassori.rinha.reponses
+package dev.valvassori.rinha.domain.reponse
 
 import kotlinx.serialization.Serializable
 

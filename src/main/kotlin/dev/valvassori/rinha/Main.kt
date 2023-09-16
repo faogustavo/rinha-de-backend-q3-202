@@ -1,7 +1,8 @@
 package dev.valvassori.rinha
 
 import dev.valvassori.rinha.helpers.JsonParser
-import dev.valvassori.rinha.reponses.BaseStatusResponseBody
+import dev.valvassori.rinha.domain.reponse.BaseStatusResponseBody
+import dev.valvassori.rinha.routes.personRoutes
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
@@ -17,9 +18,16 @@ import io.ktor.server.routing.routing
 import org.slf4j.event.Level
 
 fun main() {
-    embeddedServer(CIO, port = 8080) {
-        installCoreDependencies()
-    }.start(wait = true)
+    embeddedServer(CIO, port = 8080) { init() }
+        .start(wait = true)
+}
+
+private fun Application.init() {
+    // Deps
+    installCoreDependencies()
+
+    // Routes
+    personRoutes()
 }
 
 fun Application.installCoreDependencies() {
