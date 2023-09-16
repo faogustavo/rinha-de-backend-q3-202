@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.9.0"
     application
+    kotlin("plugin.serialization") version "1.9.0"
 }
 
 group = "dev.valvassori"
@@ -11,6 +12,16 @@ repositories {
 }
 
 dependencies {
+    implementation(libs.kotlinx.datetime)
+
+    implementation(libs.ktor.core)
+    implementation(libs.ktor.contentNegotiation)
+    implementation(libs.ktor.engine.cio)
+    implementation(libs.ktor.call.logging)
+    implementation(libs.ktor.serialization.json)
+
+    implementation(libs.logback.classic)
+
     testImplementation(kotlin("test"))
 }
 
@@ -19,9 +30,9 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(8)
+    jvmToolchain(17)
 }
 
 application {
-    mainClass.set("MainKt")
+    mainClass.set("dev.valvassori.rinha.MainKt")
 }
