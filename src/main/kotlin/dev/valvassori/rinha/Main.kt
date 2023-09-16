@@ -22,7 +22,7 @@ fun main() {
     }.start(wait = true)
 }
 
-private fun Application.installCoreDependencies() {
+fun Application.installCoreDependencies() {
     install(ContentNegotiation) {
         json(JsonParser)
     }
