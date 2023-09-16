@@ -15,6 +15,7 @@ dependencies {
     implementation(libs.kotlinx.datetime)
 
     implementation(libs.ktor.core)
+    implementation(libs.ktor.statusPage)
     implementation(libs.ktor.engine.cio)
     implementation(libs.ktor.server.contentNegotiation)
     implementation(libs.ktor.call.logging)
@@ -32,6 +33,10 @@ tasks.test {
 
 kotlin {
     jvmToolchain(17)
+
+    sourceSets.all {
+        languageSettings.optIn("kotlin.contracts.ExperimentalContracts")
+    }
 }
 
 application {
