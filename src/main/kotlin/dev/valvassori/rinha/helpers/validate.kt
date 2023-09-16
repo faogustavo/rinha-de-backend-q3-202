@@ -5,14 +5,14 @@ import java.util.UUID
 import kotlin.contracts.contract
 
 inline fun validateRequestInput(
-    value: Boolean,
+    condition: Boolean,
     lazyMessage: () -> Any
 ) {
     contract {
-        returns() implies value
+        returns() implies condition
     }
 
-    if (!value) {
+    if (!condition) {
         val message = lazyMessage()
         throw UnprocessableEntityException(message.toString())
     }
@@ -22,6 +22,7 @@ inline fun validateUUID(
     value: String?,
     lazyMessage: () -> Any
 ): UUID = try {
+    require(value != null)
     UUID.fromString(value)
 } catch (e: Throwable) {
     val message = lazyMessage()

@@ -1,6 +1,5 @@
 package dev.valvassori.rinha
 
-import dev.valvassori.rinha.helpers.testApplication
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
