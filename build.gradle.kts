@@ -14,6 +14,11 @@ repositories {
 dependencies {
     implementation(libs.kotlinx.datetime)
 
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.jdbc)
+    implementation(libs.exposed.datetime)
+    implementation(libs.postgres.jdbc)
+
     implementation(libs.ktor.core)
     implementation(libs.ktor.statusPage)
     implementation(libs.ktor.engine.cio)

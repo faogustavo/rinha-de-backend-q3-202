@@ -1,9 +1,15 @@
 [versions]
+exposed = "0.40.1"
 kotlinx-datetime = "0.4.1"
 ktor = "2.3.3"
 
 [libraries]
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+exposed-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposed" }
+postgres-jdbc = { module = "org.postgresql:postgresql", version = "42.6.0" }
 
 ktor-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-contentNegotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }

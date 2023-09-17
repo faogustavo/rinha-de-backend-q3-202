@@ -1,39 +1,29 @@
 package dev.valvassori.rinha.routes
 
-import dev.valvassori.rinha.domain.model.Person
+import dev.valvassori.rinha.database.dao.PersonDAO
 import dev.valvassori.rinha.domain.request.NewPerson
+import dev.valvassori.rinha.errors.NotFoundException
 import dev.valvassori.rinha.ext.receiveOrUnprocessableEntity
+import dev.valvassori.rinha.helpers.ErrorType
 import dev.valvassori.rinha.helpers.validateRequestInput
 import dev.valvassori.rinha.helpers.validateUUID
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.call
-import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
-import kotlinx.datetime.toLocalDate
-import java.util.UUID
 
 fun Application.personRoutes() {
     routing {
         get("/pessoas") {
             val t = call.request.queryParameters["t"]
-            validateRequestInput(!t.isNullOrEmpty()) {
+            validateRequestInput(!t.isNullOrEmpty(), errorType = ErrorType.BadRequest) {
                 "You must provide a query parameter named 't'"
             }
 
-            call.respond(
-                listOf(
-                    Person(
-                        id = UUID.randomUUID().toString(),
-                        nick = "faogustavo",
-                        name = "Gustavo Valvassori",
-                        birthDate = "1995-08-07".toLocalDate(),
-                        stack = listOf("Kotlin", "Java", "JS", "TS", "Python", "Go", "Rust")
-                    )
-                )
-            )
+            call.respond(PersonDAO.shared.find(t))
         }
 
         get("/pessoas/{id}") {
@@ -41,35 +31,22 @@ fun Application.personRoutes() {
                 "You must provide a valid UUID for the 'id' path parameter"
             }
 
-            call.respond(
-                Person(
-                    id = id.toString(),
-                    nick = "faogustavo",
-                    name = "Gustavo Valvassori",
-                    birthDate = "1995-08-07".toLocalDate(),
-                    stack = listOf("Kotlin", "Java", "JS", "TS", "Python", "Go", "Rust")
-                )
-            )
+            when (val person = PersonDAO.shared.getById(id)) {
+                null -> throw NotFoundException("Person")
+                else -> call.respond(person)
+            }
         }
 
         post("/pessoas") {
             val newPerson = call.receiveOrUnprocessableEntity<NewPerson>()
+            val createdPerson = PersonDAO.shared.create(newPerson)
 
-            call.respond(
-                listOf(
-                    Person(
-                        id = UUID.randomUUID().toString(),
-                        nick = newPerson.nick,
-                        name = newPerson.name,
-                        birthDate = newPerson.birthDate,
-                        stack = newPerson.stack.orEmpty()
-                    )
-                )
-            )
+            call.response.headers.append("Location", "/pessoas/${createdPerson.id}")
+            call.respond(HttpStatusCode.Created, createdPerson)
         }
 
         get("/contagem-pessoas") {
-            call.respond(0)
+            call.respond(PersonDAO.shared.count())
         }
     }
 }

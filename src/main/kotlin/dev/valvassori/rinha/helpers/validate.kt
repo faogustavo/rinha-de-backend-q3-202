@@ -1,11 +1,18 @@
 package dev.valvassori.rinha.helpers
 
+import dev.valvassori.rinha.errors.BadRequestException
 import dev.valvassori.rinha.errors.UnprocessableEntityException
 import java.util.UUID
 import kotlin.contracts.contract
 
+enum class ErrorType {
+    UnprocessableEntity,
+    BadRequest,
+}
+
 inline fun validateRequestInput(
     condition: Boolean,
+    errorType: ErrorType = ErrorType.UnprocessableEntity,
     lazyMessage: () -> Any
 ) {
     contract {
@@ -14,7 +21,10 @@ inline fun validateRequestInput(
 
     if (!condition) {
         val message = lazyMessage()
-        throw UnprocessableEntityException(message.toString())
+        when (errorType) {
+            ErrorType.UnprocessableEntity -> throw UnprocessableEntityException(message.toString())
+            ErrorType.BadRequest -> throw BadRequestException(message.toString())
+        }
     }
 }
 
@@ -26,5 +36,5 @@ inline fun validateUUID(
     UUID.fromString(value)
 } catch (e: Throwable) {
     val message = lazyMessage()
-    throw UnprocessableEntityException(message.toString(), e)
+    throw BadRequestException(message.toString(), e)
 }
