@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "1.9.0"
     application
     kotlin("plugin.serialization") version "1.9.0"
+    id("io.ktor.plugin") version libs.versions.ktor
 }
 
 group = "dev.valvassori"
@@ -41,6 +42,12 @@ kotlin {
 
     sourceSets.all {
         languageSettings.optIn("kotlin.contracts.ExperimentalContracts")
+    }
+}
+
+ktor {
+    fatJar {
+        archiveFileName.set("app.jar")
     }
 }
 
