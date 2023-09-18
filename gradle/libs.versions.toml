@@ -10,6 +10,7 @@ exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "e
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 exposed-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposed" }
 postgres-jdbc = { module = "org.postgresql:postgresql", version = "42.6.0" }
+hikaricp = { module = "com.zaxxer:HikariCP", version = "5.0.1" }
 
 ktor-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
 ktor-server-contentNegotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }

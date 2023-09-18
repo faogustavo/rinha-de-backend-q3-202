@@ -19,6 +19,7 @@ dependencies {
     implementation(libs.exposed.jdbc)
     implementation(libs.exposed.datetime)
     implementation(libs.postgres.jdbc)
+    implementation(libs.hikaricp)
 
     implementation(libs.ktor.core)
     implementation(libs.ktor.statusPage)
