@@ -12,6 +12,13 @@ env:
 jobs:
   build:
 
+    # This allows me to build the images for all applications using the same action config
+    strategy:
+      matrix:
+        include:
+          - suffix: ktor
+            file: application/ktor/Dockerfile
+
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -43,13 +50,14 @@ jobs:
         id: meta
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-${{ matrix.suffix }}
 
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
           context: .
+          file: ${{ matrix.file }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

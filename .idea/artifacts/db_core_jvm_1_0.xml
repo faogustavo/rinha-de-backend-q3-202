@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="db-core-jvm-1.0">
+    <output-path>$PROJECT_DIR$/datasource/database/db-core/build/libs</output-path>
+    <root id="archive" name="db-core-jvm-1.0.jar">
+      <element id="module-output" name="rinha-de-backend-q3-2023.datasource.database.db-core.jvmMain" />
+    </root>
+  </artifact>
+</component>

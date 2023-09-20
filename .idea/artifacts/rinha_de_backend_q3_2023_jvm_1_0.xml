@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="rinha-de-backend-q3-2023-jvm-1.0">
+    <output-path>$PROJECT_DIR$/build/libs</output-path>
+    <root id="archive" name="rinha-de-backend-q3-2023-jvm-1.0.jar">
+      <element id="module-output" name="rinha-de-backend-q3-2023.jvmMain" />
+    </root>
+  </artifact>
+</component>
