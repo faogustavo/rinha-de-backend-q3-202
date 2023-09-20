@@ -6,6 +6,9 @@ object Env {
     val DATABASE_USER: String = getEnvOrDefault("DATABASE_USER", "rinha")
     val DATABASE_PASSWORD: String = getEnvOrDefault("DATABASE_PASSWORD", "rinha")
 
+    val REDIS_CONN_URL: String = getEnvOrDefault("REDIS_URL", "localhost")
+    val REDIS_PORT: Int = getEnvOrNull("REDIS_PORT")?.toIntOrNull() ?: 6379
+
     val MAX_POOL_SIZE: Int = getEnvOrNull("MAX_POOL_SIZE")?.toIntOrNull() ?: 8
 
     private fun getEnvOrNull(key: String) = try {

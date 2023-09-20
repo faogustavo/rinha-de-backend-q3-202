@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "dev.valvassori"
-version = "1.0-SNAPSHOT"
+version = "1.0"
 
 repositories {
     mavenCentral()
@@ -20,6 +20,7 @@ dependencies {
     implementation(libs.exposed.datetime)
     implementation(libs.postgres.jdbc)
     implementation(libs.hikaricp)
+    implementation(libs.jedis)
 
     implementation(libs.ktor.core)
     implementation(libs.ktor.statusPage)

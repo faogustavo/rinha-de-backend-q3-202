@@ -5,13 +5,11 @@ import com.zaxxer.hikari.HikariDataSource
 import com.zaxxer.hikari.util.IsolationLevel
 import dev.valvassori.rinha.errors.UnprocessableEntityException
 import dev.valvassori.rinha.helpers.Env
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.DatabaseConfig
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.concurrent.Executors
 
@@ -37,9 +35,9 @@ class DBConnection(private val db: Database) {
     private val coroutineDispatcher = Executors.newCachedThreadPool().asCoroutineDispatcher()
     private val semaphore = Semaphore(32)
 
-    suspend fun <T> dbQuery(block: suspend () -> T): T = newSuspendedTransaction(coroutineDispatcher, db) {
+    suspend fun <T> dbQuery(block: suspend () -> T): T = semaphore.withPermit {
         try {
-            semaphore.withPermit { block() }
+            newSuspendedTransaction(coroutineDispatcher, db) { block() }
         } catch (e: ExposedSQLException) {
             when (e.sqlState) {
                 DBErrorCodes.IntegrityViolation.UNIQUE_VIOLATION ->
