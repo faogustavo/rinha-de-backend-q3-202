@@ -24,7 +24,12 @@ dependencies {
 
     implementation(libs.ktor.core)
     implementation(libs.ktor.statusPage)
+
     implementation(libs.ktor.engine.cio)
+    implementation(libs.ktor.engine.netty)
+    implementation(libs.ktor.engine.jetty)
+    implementation(libs.ktor.engine.tomcat)
+
     implementation(libs.ktor.server.contentNegotiation)
     implementation(libs.ktor.call.logging)
     implementation(libs.ktor.serialization.json)

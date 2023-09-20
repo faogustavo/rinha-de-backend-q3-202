@@ -10,11 +10,23 @@ object Env {
     val REDIS_PORT: Int = getEnvOrNull("REDIS_PORT")?.toIntOrNull() ?: 6379
 
     val MAX_POOL_SIZE: Int = getEnvOrNull("MAX_POOL_SIZE")?.toIntOrNull() ?: 8
+    val ENGINE: Engine = Engine.parse(getEnvOrDefault("ENGINE", Engine.CIO.name))
 
     private fun getEnvOrNull(key: String) = try {
         System.getenv(key).takeUnless { it.isBlank() }
     } catch (e: Exception) {
         null
+    }
+
+    enum class Engine {
+        CIO, Netty, Jetty, Tomcat;
+
+        companion object {
+            fun parse(value: String): Engine = values().find { it.name.equals(value, ignoreCase = true) }
+                ?: throw IllegalArgumentException(
+                    "Invalid engine: $value. Supported values are: ${values().joinToString(", ")}"
+                )
+        }
     }
 
     private fun getEnvOrDefault(key: String, default: String): String =

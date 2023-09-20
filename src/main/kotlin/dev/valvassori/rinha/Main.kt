@@ -1,9 +1,10 @@
 package dev.valvassori.rinha
 
-import dev.valvassori.rinha.helpers.JsonParser
 import dev.valvassori.rinha.domain.reponse.BaseStatusResponseBody
 import dev.valvassori.rinha.errors.APIException
 import dev.valvassori.rinha.errors.InternalServerError
+import dev.valvassori.rinha.helpers.Env
+import dev.valvassori.rinha.helpers.JsonParser
 import dev.valvassori.rinha.routes.personRoutes
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
@@ -13,7 +14,8 @@ import io.ktor.server.application.install
 import io.ktor.server.application.log
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
-import io.ktor.server.plugins.CannotTransformContentToTypeException
+import io.ktor.server.jetty.Jetty
+import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
@@ -21,11 +23,19 @@ import io.ktor.server.request.path
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import io.ktor.server.tomcat.Tomcat
 import org.slf4j.event.Level
 
 fun main() {
-    embeddedServer(CIO, port = 8080) { init() }
-        .start(wait = true)
+    embeddedServer(
+        factory = when (Env.ENGINE) {
+            Env.Engine.CIO -> CIO
+            Env.Engine.Jetty -> Jetty
+            Env.Engine.Netty -> Netty
+            Env.Engine.Tomcat -> Tomcat
+        },
+        port = 8080,
+    ) { init() }.start(wait = true)
 }
 
 private fun Application.init() {
