@@ -1,6 +1,17 @@
+# 3GB RAM
+# - 2 API instances with .75GB RAM each
+# - 1 Load Balancer with .3GB RAM
+# - 1 Redis with .2GB RAM
+# - 1 Postgres with 1GB RAM
+# 1.5 CPU
+# - 2 API instances with .35 CPU each
+# - 1 Load Balancer with .2 CPU
+# - 1 Redis with .1 CPU
+# - 1 Postgres with .5 CPU
+
 version: '3.5'
 services:
-  api1: # API - Instância 01
+  api1: &api # API - Instância 01
     image: rinha-de-backend-q3-2023-ktor
     hostname: api1
     depends_on:
@@ -16,33 +27,16 @@ services:
       JAVA_TOOL_OPTIONS: "-Xmx768M -Xms768M -XX:+UseG1GC -XX:+AlwaysPreTouch -XX:MaxGCPauseMillis=50 -XX:InitiatingHeapOccupancyPercent=70"
       DATABASE_URL: jdbc:postgresql://db:5432/rinha
       REDIS_URL: redis
-      MAX_POOL_SIZE: 16
+      MAX_POOL_SIZE: 32
     deploy:
       resources:
         limits:
           cpus: '0.35'
-          memory: '1GB'
+          memory: '0.75GB'
 
   api2: # API - Instância 02
-    image: rinha-de-backend-q3-2023-ktor
+    <<: *api
     hostname: api2
-    depends_on:
-      db:
-        condition: service_healthy
-      redis:
-        condition: service_started
-    expose:
-      - "8080"
-    environment:
-      JAVA_TOOL_OPTIONS: "-Xmx768M -Xms768M -XX:+UseG1GC -XX:+AlwaysPreTouch -XX:MaxGCPauseMillis=50 -XX:InitiatingHeapOccupancyPercent=70"
-      DATABASE_URL: jdbc:postgresql://db:5432/rinha
-      REDIS_URL: redis
-      MAX_POOL_SIZE: 16
-    deploy:
-      resources:
-        limits:
-          cpus: '0.35'
-          memory: '1GB'
 
   nginx: # Load Balancer
     image: nginx:latest
@@ -57,7 +51,7 @@ services:
       resources:
         limits:
           cpus: '0.2'
-          memory: '0.2GB'
+          memory: '0.3GB'
 
   redis:
     image: redis:latest
@@ -89,4 +83,4 @@ services:
       resources:
         limits:
           cpus: '0.5'
-          memory: '0.8GB'
+          memory: '1GB'

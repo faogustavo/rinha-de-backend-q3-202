@@ -35,7 +35,7 @@ fun main() {
             Engine.Netty -> Netty
             Engine.Tomcat -> Tomcat
         },
-        port = 8080,
+        port = Env.getInt("HTTP_PORT", 8080),
     ) { init() }.start(wait = true)
 }
 
@@ -58,6 +58,7 @@ fun Application.installCoreDependencies() {
     }
 
     install(StatusPages) {
+        val returnErrorBody = Env.getBoolean("RETURN_ERROR_BODY")
         exception<Throwable> { call, cause ->
             when (cause) {
                 is APIException -> {
@@ -65,15 +66,23 @@ fun Application.installCoreDependencies() {
                         call.application.log.error("Unhandled exception", cause)
                     }
 
-                    call.respond(HttpStatusCode.fromValue(cause.code), cause.asResponse())
+                    if (returnErrorBody) {
+                        call.respond(HttpStatusCode.fromValue(cause.code), cause.asResponse())
+                    } else {
+                        call.respond(HttpStatusCode.fromValue(cause.code))
+                    }
                 }
 
                 else -> {
                     call.application.log.error("Unhandled exception", cause)
-                    call.respond(
-                        HttpStatusCode.InternalServerError,
-                        BaseStatusResponseBody(500, "Internal Server Error")
-                    )
+                    if (returnErrorBody) {
+                        call.respond(
+                            HttpStatusCode.InternalServerError,
+                            BaseStatusResponseBody(500, "Internal Server Error")
+                        )
+                    } else {
+                        call.respond(HttpStatusCode.InternalServerError)
+                    }
                 }
             }
         }
