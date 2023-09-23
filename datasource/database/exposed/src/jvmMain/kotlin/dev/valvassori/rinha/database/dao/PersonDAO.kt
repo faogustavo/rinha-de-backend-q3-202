@@ -21,25 +21,21 @@ internal class PersonDAOImpl(private val connection: DBConnection) : PersonDAO {
             ?.let(Person.Companion::fromDB)
     }
 
-    override suspend fun create(newPerson: NewPerson): Person {
-        val createdPerson = Person.fromNewPerson(newPerson)
-
+    override suspend fun create(person: Person) {
         connection.dbQuery {
             People.insert {
-                it[id] = UUID.fromString(createdPerson.id)
-                it[nick] = newPerson.nick
-                it[name] = newPerson.name
-                it[birthDate] = newPerson.birthDate
-                it[stack] = newPerson.stack.orEmpty().toTypedArray()
+                it[id] = UUID.fromString(person.id)
+                it[nick] = person.nick
+                it[name] = person.name
+                it[birthDate] = person.birthDate
+                it[stack] = person.stack.toTypedArray()
                 it[search] = buildList {
-                    add(newPerson.nick)
-                    add(newPerson.name)
-                    addAll(newPerson.stack.orEmpty())
+                    add(person.nick)
+                    add(person.name)
+                    addAll(person.stack.orEmpty())
                 }.joinToString(" ")
             }
         }
-
-        return createdPerson
     }
 
     override suspend fun find(term: String): List<Person> = connection.dbQuery {

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="no-op-jvm-1.0">
+    <output-path>$PROJECT_DIR$/datasource/cache/no-op/build/libs</output-path>
+    <root id="archive" name="no-op-jvm-1.0.jar">
+      <element id="module-output" name="rinha-de-backend-q3-2023.datasource.cache.no-op.jvmMain" />
+    </root>
+  </artifact>
+</component>

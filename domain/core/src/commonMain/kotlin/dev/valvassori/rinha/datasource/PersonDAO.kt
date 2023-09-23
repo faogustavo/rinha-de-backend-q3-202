@@ -8,7 +8,7 @@ interface PersonDAO {
     companion object {}
 
     suspend fun getById(id: String): Person?
-    suspend fun create(newPerson: NewPerson): Person
+    suspend fun create(person: Person)
     suspend fun find(term: String): List<Person>
     suspend fun count(): Long
 }

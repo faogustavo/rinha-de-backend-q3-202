@@ -23,5 +23,6 @@ CREATE EXTENSION pg_stat_statements;
 ALTER SYSTEM SET shared_preload_libraries = 'pg_stat_statements';
 
 -- Update config
-ALTER SYSTEM set shared_buffers = '600MB';
-ALTER SYSTEM set work_mem = '8MB';
+ALTER SYSTEM SET shared_buffers = '768MB';
+ALTER SYSTEM SET work_mem = '8MB';
+ALTER SYSTEM SET max_connections = '500';

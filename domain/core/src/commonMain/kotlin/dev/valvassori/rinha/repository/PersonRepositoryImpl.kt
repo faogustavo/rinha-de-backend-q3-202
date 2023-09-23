@@ -18,8 +18,12 @@ internal class PersonRepositoryImpl(
             throw UnprocessableEntityException("Duplicate key value violates unique constraint")
         }
 
-        return dao.create(newPerson)
-            .also { cache.savePerson(it) }
+        val createdPerson = Person.fromNewPerson(newPerson)
+
+        cache.savePerson(createdPerson)
+        dao.create(createdPerson)
+
+        return createdPerson
     }
 
     override suspend fun find(term: String): List<Person> = dao.find(term)

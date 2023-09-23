@@ -24,7 +24,9 @@ kotlin {
             dependencies {
                 implementation(project(":domain:core"))
                 implementation(project(":datasource:database:exposed"))
+
                 implementation(project(":datasource:cache:redis"))
+                implementation(project(":datasource:cache:no-op"))
 
                 implementation(libs.ktor.core)
                 implementation(libs.ktor.statusPage)

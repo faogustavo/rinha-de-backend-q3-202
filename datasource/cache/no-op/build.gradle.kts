@@ -17,20 +17,12 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(":domain:core"))
-                implementation(libs.kotlinx.serialization)
-                implementation(libs.kotlinx.coroutines)
             }
         }
 
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
-            }
-        }
-
-        val jvmMain by getting {
-            dependencies {
-                implementation(libs.jedis)
             }
         }
     }

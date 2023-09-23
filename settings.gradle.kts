@@ -24,4 +24,6 @@ include(":datasource:database")
 include(":datasource:database:db-core")
 include(":datasource:database:exposed")
 
+include(":datasource:cache")
 include(":datasource:cache:redis")
+include(":datasource:cache:no-op")

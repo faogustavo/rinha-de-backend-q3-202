@@ -1,7 +1,10 @@
 package dev.valvassori.rinha.routes
 
+import dev.valvassori.rinha.Env
 import dev.valvassori.rinha.cache.RedisCacheStorage
+import dev.valvassori.rinha.cache.datasource.NoopPersonCache
 import dev.valvassori.rinha.database.DBConnection
+import dev.valvassori.rinha.datasource.PersonCache
 import dev.valvassori.rinha.domain.request.NewPerson
 import dev.valvassori.rinha.errors.NotFoundException
 import dev.valvassori.rinha.ext.receiveOrUnprocessableEntity
@@ -17,10 +20,18 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 
+private val cache: PersonCache by lazy {
+    if (Env.getBoolean("DISABLE_CACHE", false)) {
+        NoopPersonCache
+    } else {
+        RedisCacheStorage.shared.personCache
+    }
+}
+
 private val repository by lazy {
     PersonRepositoryFactory.newInstance(
         dao = DBConnection.shared.personDAO,
-        cache = RedisCacheStorage.shared.personCache,
+        cache = cache,
     )
 }
 
