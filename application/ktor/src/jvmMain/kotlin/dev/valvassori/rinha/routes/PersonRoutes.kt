@@ -3,8 +3,10 @@ package dev.valvassori.rinha.routes
 import dev.valvassori.rinha.Env
 import dev.valvassori.rinha.cache.RedisCacheStorage
 import dev.valvassori.rinha.cache.datasource.NoopPersonCache
-import dev.valvassori.rinha.database.DBConnection
+import dev.valvassori.rinha.database.ExposedDBConnection
+import dev.valvassori.rinha.database.JDBCConnection
 import dev.valvassori.rinha.datasource.PersonCache
+import dev.valvassori.rinha.datasource.PersonDAO
 import dev.valvassori.rinha.domain.request.NewPerson
 import dev.valvassori.rinha.errors.NotFoundException
 import dev.valvassori.rinha.ext.receiveOrUnprocessableEntity
@@ -28,12 +30,15 @@ private val cache: PersonCache by lazy {
     }
 }
 
-private val repository by lazy {
-    PersonRepositoryFactory.newInstance(
-        dao = DBConnection.shared.personDAO,
-        cache = cache,
-    )
+private val dao: PersonDAO by lazy {
+    if (Env.getBoolean("DISABLE_EXPOSED", false)) {
+        JDBCConnection.shared.personDAO
+    } else {
+        ExposedDBConnection.shared.personDAO
+    }
 }
+
+private val repository by lazy { PersonRepositoryFactory.newInstance(dao, cache) }
 
 fun Application.personRoutes() {
     routing {

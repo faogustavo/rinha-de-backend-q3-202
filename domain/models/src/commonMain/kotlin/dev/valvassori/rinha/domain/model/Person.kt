@@ -5,6 +5,7 @@ import dev.valvassori.rinha.helpers.randomUUID
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Serializable
 data class Person(
@@ -17,6 +18,13 @@ data class Person(
     val birthDate: LocalDate,
     val stack: List<String>,
 ) {
+    val search: String by lazy {
+        buildList {
+            add(nick)
+            add(name)
+            addAll(stack)
+        }.joinToString(" ").lowercase()
+    }
 
     companion object {
         fun fromNewPerson(newPerson: NewPerson) = Person(

@@ -1,13 +1,22 @@
-# 3GB RAM
-# - 2 API instances with .75GB RAM each
-# - 1 Load Balancer with .3GB RAM
-# - 1 Redis with .2GB RAM
-# - 1 Postgres with 1GB RAM
+# 3GB RAM - WITH CACHE
+# - 2 API instances with .75GB RAM each (1.5 total)
+# - 1 Load Balancer with .3GB RAM (1.8 total)
+# - 1 Redis with .2GB RAM (2 total)
+# - 1 Postgres with 1GB RAM (3 total)
 # 1.5 CPU
-# - 2 API instances with .35 CPU each
-# - 1 Load Balancer with .2 CPU
-# - 1 Redis with .1 CPU
-# - 1 Postgres with .5 CPU
+# - 2 API instances with .35 CPU each (.7 total)
+# - 1 Load Balancer with .2 CPU (.9 total)
+# - 1 Redis with .1 CPU (1 total)
+# - 1 Postgres with .5 CPU (1.5 total)
+
+# 3GB RAM - WITHOUT CACHE
+# - 2 API instances with .75GB RAM each (1.5 total)
+# - 1 Load Balancer with .5GB RAM (2 total)
+# - 1 Postgres with 1GB RAM (3 total)
+# 1.5 CPU
+# - 2 API instances with .3 CPU each (.6 total)
+# - 1 Load Balancer with .2 CPU (.8 total)
+# - 1 Postgres with .7 CPU (1.5 total)
 
 version: '3.5'
 services:
@@ -27,7 +36,9 @@ services:
       JAVA_TOOL_OPTIONS: "-Xmx512M -Xms512M -XX:+UseG1GC -XX:+AlwaysPreTouch -XX:MaxGCPauseMillis=50 -XX:InitiatingHeapOccupancyPercent=70"
       DATABASE_URL: jdbc:postgresql://db:5432/rinha
       REDIS_URL: redis
-      MAX_POOL_SIZE: 224
+      MAX_POOL_SIZE: 128
+      DISABLE_EXPOSED: true
+      DISABLE_CACHE: true
       ENGINE: Netty
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
@@ -66,22 +77,22 @@ services:
       resources:
         limits:
           cpus: '0.2'
-          memory: '0.3GB'
+          memory: '0.5GB'
     networks:
       - rinha
 
-  redis:
-    image: redis:latest
-    ports:
-      - '6379:6379'
-    command: redis-server --save "" --appendonly no # Disable persistence
-    deploy:
-      resources:
-        limits:
-          cpus: '0.1'
-          memory: '0.2GB'
-    networks:
-      - rinha
+#  redis:
+#    image: redis:latest
+#    ports:
+#      - '6379:6379'
+#    command: redis-server --save "" --appendonly no # Disable persistence
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.1'
+#          memory: '0.2GB'
+#    networks:
+#      - rinha
 
   db: # Banco de dados
     image: postgres:15
@@ -101,7 +112,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.6'
+          cpus: '0.7'
           memory: '1GB'
     networks:
       - rinha

@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/datasource/database" />
             <option value="$PROJECT_DIR$/datasource/database/db-core" />
             <option value="$PROJECT_DIR$/datasource/database/exposed" />
+            <option value="$PROJECT_DIR$/datasource/database/raw-jdbc" />
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/domain/core" />
             <option value="$PROJECT_DIR$/domain/models" />

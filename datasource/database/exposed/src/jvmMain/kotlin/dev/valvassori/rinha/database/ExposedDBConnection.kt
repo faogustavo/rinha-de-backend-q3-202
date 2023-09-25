@@ -1,7 +1,9 @@
 package dev.valvassori.rinha.database
 
-import dev.valvassori.rinha.database.dao.PersonDAOImpl
+import dev.valvassori.rinha.Env
+import dev.valvassori.rinha.database.dao.ExposedPersonDAOImpl
 import dev.valvassori.rinha.datasource.PersonDAO
+import dev.valvassori.rinha.env.getConnectionPoolSize
 import dev.valvassori.rinha.errors.UnprocessableEntityException
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.sync.Semaphore
@@ -11,17 +13,17 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import java.util.concurrent.Executors
 
-class DBConnection(private val db: Database) {
+class ExposedDBConnection internal constructor(private val db: Database) {
     companion object {
-        val shared: DBConnection by lazy {
-            DBConnection(Database.connect(DatabaseConnectionFactory.newDataSource()))
+        val shared: ExposedDBConnection by lazy {
+            ExposedDBConnection(Database.connect(DatabaseConnectionFactory.newDataSource()))
         }
     }
 
-    val personDAO: PersonDAO by lazy { PersonDAOImpl(this) }
+    val personDAO: PersonDAO by lazy { ExposedPersonDAOImpl(this) }
 
     private val coroutineDispatcher = Executors.newCachedThreadPool().asCoroutineDispatcher()
-    private val semaphore = Semaphore(32)
+    private val semaphore = Semaphore(Env.getConnectionPoolSize() * 4)
 
     suspend fun <T> dbQuery(block: suspend () -> T): T = semaphore.withPermit {
         try {

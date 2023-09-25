@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import com.zaxxer.hikari.util.IsolationLevel
 import dev.valvassori.rinha.Env
+import dev.valvassori.rinha.env.getConnectionPoolSize
 
 object DatabaseConnectionFactory {
     fun newDataSource(): HikariDataSource {
@@ -16,7 +17,12 @@ object DatabaseConnectionFactory {
 
         config.isAutoCommit = true
         config.transactionIsolation = IsolationLevel.TRANSACTION_READ_COMMITTED.name
-        config.maximumPoolSize = Env.getEnvOrNull("MAX_POOL_SIZE")?.toIntOrNull() ?: 8
+        config.maximumPoolSize = Env.getConnectionPoolSize()
+
+        // https://stackoverflow.com/a/32969976
+        config.leakDetectionThreshold = 30_000 // 30 secs
+
+        // https://github.com/JetBrains/Exposed/wiki/DSL#batch-insert
         config.addDataSourceProperty("reWriteBatchedInserts", "true")
 
         return HikariDataSource(config)

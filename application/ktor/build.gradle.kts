@@ -23,7 +23,9 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(project(":domain:core"))
+
                 implementation(project(":datasource:database:exposed"))
+                implementation(project(":datasource:database:raw-jdbc"))
 
                 implementation(project(":datasource:cache:redis"))
                 implementation(project(":datasource:cache:no-op"))

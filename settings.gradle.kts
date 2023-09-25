@@ -23,6 +23,7 @@ include(":datasource")
 include(":datasource:database")
 include(":datasource:database:db-core")
 include(":datasource:database:exposed")
+include(":datasource:database:raw-jdbc")
 
 include(":datasource:cache")
 include(":datasource:cache:redis")
