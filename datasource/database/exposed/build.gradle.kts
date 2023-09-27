@@ -18,6 +18,7 @@ kotlin {
             dependencies {
                 implementation(project(":domain:core"))
                 implementation(project(":datasource:database:db-core"))
+                implementation(libs.kotlinx.serialization)
             }
         }
 

@@ -11,6 +11,18 @@ services:
       POSTGRES_DB: rinha
     ports:
       - "5432:5432"
+  mysql:
+    image: mysql:8
+    volumes:
+      - ./db/mysql/scripts:/docker-entrypoint-initdb.d
+      - ./db/mysql/my.cnf:/etc/my.cnf
+    environment:
+      MYSQL_USER: rinha
+      MYSQL_PASSWORD: rinha
+      MYSQL_DATABASE: rinha
+      MYSQL_ROOT_PASSWORD: dev
+    ports:
+      - "3306:3306"
   redis:
     image: redis:latest
     ports:

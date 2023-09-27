@@ -17,6 +17,7 @@ CREATE INDEX CONCURRENTLY IF NOT EXISTS people_search_idx ON people USING GIST (
 
 -- Disable Logs
 ALTER SYSTEM SET log_statement TO 'none';
+ALTER SYSTEM SET log_lock_waits TO 'on';
 ALTER SYSTEM SET log_min_messages TO 'panic';
 ALTER SYSTEM SET log_min_error_statement TO 'panic';
 
@@ -25,6 +26,12 @@ ALTER SYSTEM SET log_min_error_statement TO 'panic';
 -- ALTER SYSTEM SET shared_preload_libraries = 'pg_stat_statements';
 
 -- Update config
-ALTER SYSTEM SET shared_buffers = '768MB';
-ALTER SYSTEM SET work_mem = '8MB';
+ALTER SYSTEM SET autovacuum = 'on';
+ALTER SYSTEM SET superuser_reserved_connections = '3';
+ALTER SYSTEM SET shared_buffers = '512MB';
+ALTER SYSTEM SET maintenance_work_mem = '256MB';
+ALTER SYSTEM SET wal_buffers = '64MB';
+ALTER SYSTEM SET work_mem = '2MB';
 ALTER SYSTEM SET max_connections = '500';
+ALTER SYSTEM SET random_page_cost = '4.0';
+ALTER SYSTEM SET effective_io_concurrency = '2';

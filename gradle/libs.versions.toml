@@ -14,6 +14,7 @@ exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "e
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
 exposed-datetime = { module = "org.jetbrains.exposed:exposed-kotlin-datetime", version.ref = "exposed" }
 postgres-jdbc = { module = "org.postgresql:postgresql", version = "42.6.0" }
+mysql-jdbc = { module = "mysql:mysql-connector-java", version = "8.0.33" }
 hikaricp = { module = "com.zaxxer:HikariCP", version = "5.0.1" }
 jedis = { module = "redis.clients:jedis", version = "5.0.0" }
 

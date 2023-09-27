@@ -23,6 +23,7 @@ kotlin {
             dependencies {
                 api(libs.hikaricp)
                 api(libs.postgres.jdbc)
+                api(libs.mysql.jdbc)
             }
         }
 

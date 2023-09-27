@@ -1,7 +1,12 @@
 package dev.valvassori.rinha.database
 
+import dev.valvassori.rinha.database.model.SQLDialect
+
 object DBErrorCodes {
     object IntegrityViolation {
-        val UNIQUE_VIOLATION = "23505"
+        fun uniqueViolation(dialect: SQLDialect) = when (dialect) {
+            SQLDialect.POSTGRES -> "23505"
+            SQLDialect.MYSQL -> "23000"
+        }
     }
 }
