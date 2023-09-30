@@ -1,11 +1,10 @@
 package dev.valvassori.rinha
 
 import dev.valvassori.rinha.domain.reponse.BaseStatusResponseBody
-import dev.valvassori.rinha.env.ENGINE
-import dev.valvassori.rinha.env.Engine
 import dev.valvassori.rinha.errors.APIException
 import dev.valvassori.rinha.errors.InternalServerError
 import dev.valvassori.rinha.helpers.JsonParser
+import dev.valvassori.rinha.network.Engine
 import dev.valvassori.rinha.routes.personRoutes
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.kotlinx.json.json
@@ -13,10 +12,7 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.call
 import io.ktor.server.application.install
 import io.ktor.server.application.log
-import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
-import io.ktor.server.jetty.Jetty
-import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.callloging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
@@ -24,18 +20,12 @@ import io.ktor.server.request.path
 import io.ktor.server.response.respond
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
-import io.ktor.server.tomcat.Tomcat
 import org.slf4j.event.Level
 
 fun main() {
     embeddedServer(
-        factory = when (Env.ENGINE) {
-            Engine.CIO -> CIO
-            Engine.Jetty -> Jetty
-            Engine.Netty -> Netty
-            Engine.Tomcat -> Tomcat
-        },
-        port = Env.getInt("HTTP_PORT", 8080),
+        factory = Engine.fromEnv().factory(),
+        port = CoreApplicationEnv.port,
     ) { init() }.start(wait = true)
 }
 
@@ -58,7 +48,7 @@ fun Application.installCoreDependencies() {
     }
 
     install(StatusPages) {
-        val returnErrorBody = Env.getBoolean("RETURN_ERROR_BODY")
+        val returnErrorBody = CoreApplicationEnv.returnErrorBody
         exception<Throwable> { call, cause ->
             when (cause) {
                 is APIException -> {
@@ -78,7 +68,7 @@ fun Application.installCoreDependencies() {
                     if (returnErrorBody) {
                         call.respond(
                             HttpStatusCode.InternalServerError,
-                            BaseStatusResponseBody(500, "Internal Server Error")
+                            BaseStatusResponseBody.internalServerError
                         )
                     } else {
                         call.respond(HttpStatusCode.InternalServerError)
@@ -90,12 +80,7 @@ fun Application.installCoreDependencies() {
 
     routing {
         get("/") {
-            call.respond(
-                BaseStatusResponseBody(
-                    code = 200,
-                    message = "Server is UP!"
-                )
-            )
+            call.respond(BaseStatusResponseBody.serverUp)
         }
     }
 }

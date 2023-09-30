@@ -20,16 +20,14 @@ kotlin {
     }
 
     sourceSets {
-        val jvmMain by getting {
+        val commonMain by getting {
             dependencies {
                 implementation(project(":domain:core"))
-
-                implementation(project(":datasource:database:exposed"))
-                implementation(project(":datasource:database:raw-jdbc"))
-
-                implementation(project(":datasource:cache:redis"))
-                implementation(project(":datasource:cache:no-op"))
-
+                implementation(project(":application:app-core"))
+            }
+        }
+        val jvmMain by getting {
+            dependencies {
                 implementation(libs.ktor.core)
                 implementation(libs.ktor.statusPage)
                 implementation(libs.ktor.server.contentNegotiation)

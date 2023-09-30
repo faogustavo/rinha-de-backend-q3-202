@@ -18,6 +18,8 @@ jobs:
         include:
           - suffix: ktor
             file: application/ktor/Dockerfile
+          - suffix: http4k
+            file: application/http4k/Dockerfile
 
     runs-on: ubuntu-latest
     permissions:

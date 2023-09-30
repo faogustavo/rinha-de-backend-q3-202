@@ -15,6 +15,8 @@ class NewPerson(
     val birthDate: LocalDate,
     val stack: List<String>? = null,
 ) {
+    // For extension purposes
+    companion object;
     init {
         validateRequestInput(nick.length <= 32) {
             "Nick must be at most 32 characters long"

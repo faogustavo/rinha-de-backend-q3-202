@@ -21,7 +21,7 @@
 version: '3.5'
 services:
   api1: &api # API - Instância 01
-    image: rinha-de-backend-q3-2023-ktor
+    image: rinha-de-backend-q3-2023-http4k
     hostname: api1
     depends_on:
       db:
@@ -43,7 +43,7 @@ services:
       REDIS_URL: redis
       DISABLE_EXPOSED: true
       DISABLE_CACHE: true
-      KTOR_ENGINE: Netty
+      ENGINE: Netty
     healthcheck:
       test: ["CMD-SHELL", "curl --fail http://localhost:8080"]
       interval: 5s

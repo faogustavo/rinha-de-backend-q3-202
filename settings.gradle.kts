@@ -12,7 +12,9 @@ plugins {
 rootProject.name = "rinha-de-backend-q3-2023"
 
 include(":application")
+include(":application:app-core")
 include(":application:ktor")
+include(":application:http4k")
 
 include(":domain")
 include(":domain:models")

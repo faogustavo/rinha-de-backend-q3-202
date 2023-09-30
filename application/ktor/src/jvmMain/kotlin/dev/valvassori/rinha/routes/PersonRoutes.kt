@@ -1,16 +1,9 @@
 package dev.valvassori.rinha.routes
 
-import dev.valvassori.rinha.Env
-import dev.valvassori.rinha.cache.RedisCacheStorage
-import dev.valvassori.rinha.cache.datasource.NoopPersonCache
-import dev.valvassori.rinha.database.ExposedDBConnection
-import dev.valvassori.rinha.database.JDBCConnection
-import dev.valvassori.rinha.datasource.PersonCache
-import dev.valvassori.rinha.datasource.PersonDAO
+import dev.valvassori.rinha.ApplicationDependencies
 import dev.valvassori.rinha.domain.request.NewPerson
 import dev.valvassori.rinha.errors.NotFoundException
 import dev.valvassori.rinha.ext.receiveOrUnprocessableEntity
-import dev.valvassori.rinha.factory.PersonRepositoryFactory
 import dev.valvassori.rinha.validation.ErrorType
 import dev.valvassori.rinha.validation.validateRequestInput
 import dev.valvassori.rinha.validation.validateUUID
@@ -22,24 +15,6 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 
-private val cache: PersonCache by lazy {
-    if (Env.getBoolean("DISABLE_CACHE", false)) {
-        NoopPersonCache
-    } else {
-        RedisCacheStorage.shared.personCache
-    }
-}
-
-private val dao: PersonDAO by lazy {
-    if (Env.getBoolean("DISABLE_EXPOSED", false)) {
-        JDBCConnection.shared.personDAO
-    } else {
-        ExposedDBConnection.shared.personDAO
-    }
-}
-
-private val repository by lazy { PersonRepositoryFactory.newInstance(dao, cache) }
-
 fun Application.personRoutes() {
     routing {
         get("/pessoas") {
@@ -48,7 +23,7 @@ fun Application.personRoutes() {
                 "You must provide a query parameter named 't'"
             }
 
-            call.respond(repository.find(t))
+            call.respond(ApplicationDependencies.repository.find(t))
         }
 
         get("/pessoas/{id}") {
@@ -56,7 +31,7 @@ fun Application.personRoutes() {
                 "You must provide a valid UUID for the 'id' path parameter"
             }
 
-            when (val person = repository.getById(id.toString())) {
+            when (val person = ApplicationDependencies.repository.getById(id.toString())) {
                 null -> throw NotFoundException("Person")
                 else -> call.respond(person)
             }
@@ -64,14 +39,14 @@ fun Application.personRoutes() {
 
         post("/pessoas") {
             val newPerson = call.receiveOrUnprocessableEntity<NewPerson>()
-            val createdPerson = repository.create(newPerson)
+            val createdPerson = ApplicationDependencies.repository.create(newPerson)
 
             call.response.headers.append("Location", "/pessoas/${createdPerson.id}")
             call.respond(HttpStatusCode.Created, createdPerson)
         }
 
         get("/contagem-pessoas") {
-            call.respond(repository.count())
+            call.respond(ApplicationDependencies.repository.count())
         }
     }
 }
